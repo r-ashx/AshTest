@@ -1,10 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-    <title>ASHADS • Views ⇄ INR</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700;14..32,800;14..32,900&display=swap" rel="stylesheet">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>L!NK4U – Script Manager | Link + Description</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <style>
         * {
             margin: 0;
@@ -13,513 +15,681 @@
         }
 
         :root {
-            --bg-deep: linear-gradient(135deg, #0B0F1C 0%, #111827 100%);
-            --glass-card: rgba(18, 25, 45, 0.75);
-            --glass-border: rgba(255, 255, 255, 0.08);
-            --text-light: #F1F5F9;
-            --text-muted: #A0AEC0;
-            --gradient-primary: linear-gradient(105deg, #EC4899 0%, #F59E0B 100%);
-            --gradient-purple: linear-gradient(120deg, #8B5CF6, #EC4899);
-        }
-
-        [data-theme="light"] {
-            --bg-deep: linear-gradient(125deg, #F8FAFC 0%, #EFF6FF 100%);
-            --glass-card: rgba(255, 255, 255, 0.85);
-            --glass-border: rgba(0, 0, 0, 0.08);
-            --text-light: #0F172A;
-            --text-muted: #334155;
+            --accent: #00ffb3;
+            --accent-glow: rgba(0, 255, 179, 0.25);
+            --accent2: #7c3aed;
+            --bg-dark: #080810;
+            --card-bg: #10101a;
+            --card-border: rgba(255,255,255,0.07);
+            --text-main: #f0f0f8;
+            --text-dim: #6b7280;
+            --danger: #ff4d6d;
+            --wa-green: #25D366;
+            --wa-dark: #128C7E;
         }
 
         body {
-            font-family: 'Inter', system-ui, -apple-system, sans-serif;
-            background: var(--bg-deep);
-            color: var(--text-light);
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            font-family: 'DM Sans', sans-serif;
             min-height: 100vh;
-            transition: background 0.3s ease, color 0.2s ease;
             overflow-x: hidden;
+            position: relative;
         }
 
-        body::before {
-            content: "";
+        /* dynamic noise overlay */
+        .noise {
             position: fixed;
             inset: 0;
-            background: radial-gradient(circle at 20% 30%, rgba(139, 92, 246, 0.15) 0%, transparent 60%),
-                        radial-gradient(circle at 85% 70%, rgba(245, 158, 11, 0.12) 0%, transparent 55%);
             pointer-events: none;
-            z-index: -1;
+            z-index: 0;
+            opacity: 0.04;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+            background-size: 220px;
         }
 
-        .glass-nav {
-            backdrop-filter: blur(18px);
-            background: rgba(15, 23, 42, 0.65);
-            border-bottom: 1px solid var(--glass-border);
-            padding: 1rem 2rem;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            flex-wrap: wrap;
-            gap: 1rem;
-            position: sticky;
-            top: 0;
-            z-index: 100;
+        /* ambient glow orbs */
+        body::before, body::after {
+            content: '';
+            position: fixed;
+            border-radius: 50%;
+            filter: blur(120px);
+            pointer-events: none;
+            z-index: 0;
         }
-        [data-theme="light"] .glass-nav {
-            background: rgba(255, 255, 255, 0.75);
+        body::before {
+            width: 500px;
+            height: 500px;
+            background: radial-gradient(circle, rgba(0,255,179,0.08), transparent 70%);
+            top: -150px;
+            left: -150px;
         }
-        .logo {
-            font-size: 1.9rem;
-            font-weight: 900;
-            background: var(--gradient-primary);
-            background-clip: text;
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            letter-spacing: -0.5px;
+        body::after {
+            width: 400px;
+            height: 400px;
+            background: radial-gradient(circle, rgba(124,58,237,0.07), transparent 70%);
+            bottom: -100px;
+            right: -100px;
         }
-        .social-links {
-            display: flex;
-            gap: 0.7rem;
-            flex-wrap: wrap;
+
+        .wrapper {
+            position: relative;
+            z-index: 2;
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 48px 20px 80px;
         }
-        .icon-btn {
-            background: rgba(255,255,255,0.08);
-            backdrop-filter: blur(8px);
-            padding: 0.7rem 1.2rem;
-            border-radius: 2rem;
-            font-weight: 600;
-            color: var(--text-light);
-            text-decoration: none;
-            font-size: 0.9rem;
-            transition: 0.25s ease;
-            border: 1px solid var(--glass-border);
+
+        /* header */
+        header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .logo-wrap {
             display: inline-flex;
             align-items: center;
-            gap: 6px;
-        }
-        .icon-btn:hover {
-            background: rgba(236, 72, 153, 0.25);
-            transform: translateY(-3px);
-            border-color: rgba(236,72,153,0.5);
-        }
-        .theme-switch {
-            background: rgba(255,255,255,0.1);
-            border: 1px solid var(--glass-border);
-            padding: 0.6rem 1.2rem;
-            border-radius: 2.5rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: 0.2s;
-            color: var(--text-light);
+            gap: 14px;
+            margin-bottom: 10px;
         }
 
-        .main-container {
-            max-width: 750px;
-            margin: 2rem auto;
-            padding: 0 1.5rem;
-        }
-
-        .premium-card {
-            background: var(--glass-card);
-            backdrop-filter: blur(18px);
-            border-radius: 2rem;
-            border: 1px solid var(--glass-border);
-            padding: 2.2rem 1.8rem;
-            box-shadow: 0 25px 45px -12px rgba(0, 0, 0, 0.3);
-            transition: transform 0.25s ease, box-shadow 0.3s;
-        }
-        .premium-card:hover {
-            transform: translateY(-6px);
-            box-shadow: 0 30px 50px -12px rgba(236, 72, 153, 0.2);
-        }
-
-        h1 {
-            font-size: 1.9rem;
-            font-weight: 800;
-            text-align: center;
-            background: var(--gradient-purple);
-            background-clip: text;
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            margin-bottom: 1.8rem;
-        }
-
-        .form-row {
-            margin-bottom: 1.8rem;
-        }
-        label {
-            font-weight: 600;
-            margin-bottom: 0.6rem;
-            display: block;
-            letter-spacing: -0.2px;
-            color: var(--text-light);
-        }
-        select, input {
-            width: 100%;
-            padding: 1rem 1.2rem;
-            background: rgba(0, 0, 0, 0.3);
-            border: 1px solid var(--glass-border);
-            border-radius: 1.5rem;
-            font-size: 1rem;
-            color: var(--text-light);
-            transition: 0.2s;
-            font-weight: 500;
-        }
-        [data-theme="light"] select, [data-theme="light"] input {
-            background: white;
-            color: #0f172a;
-        }
-        select:focus, input:focus {
-            outline: none;
-            border-color: #EC4899;
-            box-shadow: 0 0 0 3px rgba(236, 72, 153, 0.3);
-        }
-        .radio-group {
-            display: flex;
-            gap: 1.2rem;
-            background: rgba(255,255,255,0.04);
-            padding: 0.8rem 1.2rem;
-            border-radius: 2rem;
-            flex-wrap: wrap;
-        }
-        .radio-group label {
+        .logo-icon {
+            width: 48px;
+            height: 48px;
+            background: linear-gradient(135deg, var(--accent), var(--accent2));
+            border-radius: 14px;
             display: flex;
             align-items: center;
-            gap: 0.5rem;
-            font-weight: 500;
-            margin-bottom: 0;
-            cursor: pointer;
-        }
-        .radio-group input {
-            width: 18px;
-            height: 18px;
-            accent-color: #EC4899;
+            justify-content: center;
+            font-size: 1.2rem;
+            color: #000;
+            box-shadow: 0 0 30px var(--accent-glow);
         }
 
-        .btn-calc {
-            background: var(--gradient-primary);
-            border: none;
-            width: 100%;
-            padding: 1.1rem;
-            border-radius: 2rem;
+        header h1 {
+            font-family: 'Syne', sans-serif;
+            font-size: 2.6rem;
             font-weight: 800;
-            font-size: 1.1rem;
-            color: white;
-            margin-top: 0.6rem;
-            cursor: pointer;
-            transition: 0.25s;
-            box-shadow: 0 8px 20px rgba(236, 72, 153, 0.3);
-            letter-spacing: 0.3px;
-        }
-        .btn-calc:hover {
-            transform: scale(1.01) translateY(-3px);
-            box-shadow: 0 15px 30px rgba(236, 72, 153, 0.5);
+            background: linear-gradient(to right, var(--text-main), var(--accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: -1px;
         }
 
-        .result-box {
-            margin-top: 2rem;
-            background: rgba(0, 0, 0, 0.3);
-            border-radius: 1.6rem;
-            padding: 1.5rem;
-            border: 1px solid rgba(255,255,255,0.1);
-            animation: fadeSlide 0.4s ease;
+        .tagline {
+            color: var(--text-dim);
+            font-size: 0.85rem;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            font-weight: 500;
         }
-        @keyframes fadeSlide {
-            from { opacity: 0; transform: translateY(12px);}
-            to { opacity: 1; transform: translateY(0);}
-        }
-        .result-item {
+
+        /* controls row */
+        .controls {
             display: flex;
             justify-content: space-between;
-            padding: 0.9rem 0;
-            border-bottom: 1px dashed rgba(255,255,255,0.1);
+            align-items: center;
+            margin-bottom: 24px;
+        }
+
+        .stats-badge {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.8rem;
+            color: var(--text-dim);
+            background: rgba(255,255,255,0.04);
+            padding: 7px 16px;
+            border-radius: 30px;
+            border: 1px solid rgba(255,255,255,0.08);
             font-weight: 500;
         }
-        .result-item:last-child {
-            border: none;
-        }
-        .highlight {
-            font-weight: 800;
-            color: #F59E0B;
-            font-size: 1.2rem;
-        }
-        .tax-badge {
-            background: rgba(245, 158, 11, 0.2);
-            border-radius: 1rem;
-            padding: 0.7rem;
-            text-align: center;
+
+        .stats-badge i { color: var(--accent); font-size: 0.75rem; }
+
+        .btn-toggle {
+            background: transparent;
+            border: 1.5px solid var(--accent);
+            color: var(--accent);
+            padding: 10px 22px;
+            border-radius: 50px;
+            cursor: pointer;
+            font-weight: 700;
             font-size: 0.85rem;
-            margin-top: 0.8rem;
-        }
-        .info-strip {
-            text-align: center;
-            margin-top: 1.2rem;
-            font-size: 0.8rem;
-            background: rgba(0,0,0,0.2);
-            border-radius: 2rem;
-            padding: 0.6rem;
-            color: var(--text-muted);
+            letter-spacing: 0.04em;
+            display: flex;
+            align-items: center;
+            gap: 9px;
+            transition: 0.25s all ease;
+            font-family: 'DM Sans', sans-serif;
         }
 
-        @media (max-width: 640px) {
-            .glass-nav {
-                flex-direction: column;
-                align-items: stretch;
-                text-align: center;
-            }
-            .social-links {
-                justify-content: center;
-            }
-            .premium-card {
-                padding: 1.5rem;
-            }
-            .radio-group {
-                flex-direction: column;
-                gap: 0.7rem;
-            }
-            h1 {
-                font-size: 1.6rem;
-            }
+        .btn-toggle:hover {
+            background: var(--accent);
+            color: #000;
+            box-shadow: 0 0 20px var(--accent-glow);
         }
 
-        footer {
-            text-align: center;
-            padding: 1.5rem;
+        /* form panel with animation */
+        #formPanel {
+            max-height: 1000px;
+            overflow: hidden;
+            transition: max-height 0.55s cubic-bezier(0.4,0,0.2,1), opacity 0.4s ease, transform 0.4s ease, margin-bottom 0.4s ease;
+            opacity: 1;
+            transform: translateY(0);
+            margin-bottom: 36px;
+        }
+
+        #formPanel.collapsed {
+            max-height: 0;
+            opacity: 0;
+            transform: translateY(-12px);
+            margin-bottom: 0;
+            pointer-events: none;
+        }
+
+        .glass-panel {
+            background: var(--card-bg);
+            border: 1px solid rgba(255,255,255,0.09);
+            border-radius: 24px;
+            padding: 32px;
+            box-shadow: 0 24px 60px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.05);
+        }
+
+        /* streamlined form: only link + description */
+        .simplified-form {
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+        }
+
+        .field {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .field label {
             font-size: 0.7rem;
-            opacity: 0.6;
+            color: var(--text-dim);
+            font-weight: 700;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            display: flex;
+            align-items: center;
+            gap: 7px;
+        }
+
+        .field label i { color: var(--accent); }
+
+        input, textarea {
+            background: rgba(0,0,0,0.55);
+            border: 1px solid rgba(255,255,255,0.1);
+            color: var(--text-main);
+            padding: 13px 16px;
+            border-radius: 14px;
+            font-size: 0.95rem;
+            font-family: 'DM Sans', sans-serif;
+            outline: none;
+            transition: border-color 0.2s, box-shadow 0.2s;
+            width: 100%;
+            resize: vertical;
+        }
+
+        input:focus, textarea:focus {
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px var(--accent-glow);
+        }
+
+        textarea {
+            line-height: 1.5;
+        }
+
+        /* main action button: SAVE & SEND (single) */
+        .btn-primary-send {
+            width: 100%;
+            background: linear-gradient(135deg, var(--wa-green) 0%, #1aad54 100%);
+            color: #fff;
+            font-weight: 800;
+            border: none;
+            padding: 17px;
+            border-radius: 14px;
+            cursor: pointer;
+            font-size: 0.95rem;
+            font-family: 'Syne', sans-serif;
+            letter-spacing: 0.06em;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            transition: 0.3s;
+            box-shadow: 0 4px 20px rgba(37,211,102,0.3);
+            margin-top: 6px;
+        }
+
+        .btn-primary-send:hover {
+            box-shadow: 0 6px 32px rgba(37,211,102,0.55);
+            transform: translateY(-2px);
+        }
+
+        /* Cards grid */
+        .links-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 20px;
+        }
+
+        .card {
+            background: var(--card-bg);
+            border-radius: 20px;
+            padding: 20px;
+            border: 1px solid var(--card-border);
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+            transition: border-color 0.3s, transform 0.3s, box-shadow 0.3s;
+            animation: fadeSlideIn 0.4s ease both;
+        }
+
+        @keyframes fadeSlideIn {
+            from { opacity: 0; transform: translateY(16px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .card:hover {
+            border-color: rgba(0, 255, 179, 0.4);
+            transform: translateY(-4px);
+            box-shadow: 0 20px 44px rgba(0,0,0,0.4);
+        }
+
+        /* link row display */
+        .link-simple {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: rgba(0,255,179,0.05);
+            border: 1px solid rgba(0,255,179,0.2);
+            border-radius: 12px;
+            padding: 12px 14px;
+            text-decoration: none;
+            transition: 0.2s;
+            word-break: break-all;
+        }
+        .link-simple:hover {
+            background: rgba(0, 255, 179, 0.12);
+            border-color: var(--accent);
+        }
+        .link-icon {
+            color: var(--accent);
+            font-size: 0.9rem;
+            flex-shrink: 0;
+        }
+        .link-url {
+            color: #cbd5e1;
+            font-size: 0.85rem;
+            font-weight: 500;
+            flex: 1;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+        .link-simple:hover .link-url {
+            white-space: normal;
+            word-break: break-all;
+        }
+
+        /* description block */
+        .desc-block {
+            background: rgba(255,255,255,0.03);
+            border: 1px solid rgba(255,255,255,0.05);
+            border-radius: 12px;
+            padding: 14px;
+            display: flex;
+            gap: 10px;
+        }
+        .desc-block i {
+            color: var(--text-dim);
+            margin-top: 2px;
+            font-size: 0.8rem;
+        }
+        .desc-text {
+            font-size: 0.85rem;
+            line-height: 1.5;
+            color: #d1d5db;
+            word-break: break-word;
+            white-space: pre-wrap;
+            display: -webkit-box;
+            -webkit-line-clamp: 4;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .card-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 4px;
+            border-top: 1px solid rgba(255,255,255,0.05);
+            padding-top: 12px;
+        }
+
+        .action-group {
+            display: flex;
+            gap: 6px;
+        }
+
+        .icon-btn {
+            background: none;
+            border: none;
+            color: var(--text-dim);
+            cursor: pointer;
+            padding: 7px 9px;
+            border-radius: 9px;
+            font-size: 0.95rem;
+            transition: 0.2s;
+        }
+        .icon-btn:hover {
+            color: var(--text-main);
+            background: rgba(255,255,255,0.07);
+        }
+        .icon-btn.delete:hover {
+            color: var(--danger);
+            background: rgba(255,77,109,0.1);
+        }
+        .icon-btn.wa-share {
+            color: var(--wa-green);
+            font-size: 1.25rem;
+        }
+        .icon-btn.wa-share:hover {
+            color: #fff;
+            background: var(--wa-green);
+        }
+
+        .empty-state {
+            grid-column: 1 / -1;
+            text-align: center;
+            padding: 70px 20px;
+            color: var(--text-dim);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 14px;
+        }
+        .empty-state i {
+            font-size: 2.8rem;
+            opacity: 0.3;
+        }
+        .empty-state strong {
+            color: var(--accent);
+        }
+
+        @media (max-width: 580px) {
+            .wrapper { padding: 32px 16px 60px; }
+            header h1 { font-size: 2rem; }
+            .glass-panel { padding: 22px; }
+            .controls { flex-wrap: wrap; gap: 12px; }
         }
     </style>
 </head>
 <body>
-<div class="glass-nav">
-    <div class="logo">Gloab X Media</div>
-    <div class="social-links">
-        <a href="https://chat.whatsapp.com/LuIZeCGduEM6VIwAnvrsuF?mode=gi_t" target="_blank" class="icon-btn">Join US!💸</a>
-        <a href="https://www.instagram.com/ashx.online/" target="_blank" class="icon-btn">AshX</a>
+<div class="noise"></div>
+
+<div class="wrapper">
+    <header>
+        <div class="logo-wrap">
+            <span class="logo-icon"><i class="fas fa-scroll"></i></span>
+            <h1>L!nk4U</h1>
+        </div>
+        <p class="tagline">Script Manager — Store. Share. Send.</p>
+    </header>
+
+    <div class="controls">
+        <div class="stats-badge">
+            <i class="fas fa-database"></i>
+            <span id="linkCount">0</span> Scripts Stored
+        </div>
+        <button class="btn-toggle" onclick="toggleVault()">
+            <i id="toggleIcon" class="fas fa-plus"></i>
+            <span id="toggleText">Add Script</span>
+        </button>
     </div>
-    <button class="theme-switch" id="themeToggleBtn">🌙 Dark</button>
-</div>
 
-<div class="main-container">
-    <div class="premium-card">
-        <h1>Views ⇄ INR</h1>
-        
-        <div class="form-row">
-            <label>CPM (₹ per million views)</label>
-            <select id="cpmSelect">
-                <!-- <option value="600">₹600</option>
-                <option value="700">₹700</option> -->
-                <option value="10000">₹10,000</option>
-                <option value="custom">Custom CPM</option>
-            </select>
-            <div id="customCpmContainer" style="margin-top: 0.8rem; display: none;">
-                <input type="number" id="customCpmInput" placeholder="Custom CPM (₹)" step="1" min="1" value="650">
-            </div>
+    <!-- Form Panel: only Description + Link -->
+    <div id="formPanel" class="collapsed">
+        <div class="glass-panel">
+            <form id="linkForm" class="simplified-form">
+                <input type="hidden" id="editIndex">
+
+                <div class="field">
+                    <label><i class="fas fa-link"></i> PAGE LINK</label>
+                    <input type="url" id="pageLink" placeholder="https://instagram.com/yourpage / any url" required>
+                </div>
+
+                <div class="field">
+                    <label><i class="fas fa-align-left"></i> DESCRIPTION / SCRIPT</label>
+                    <textarea id="description" placeholder="Write your script, caption or notes here..." rows="5" required></textarea>
+                </div>
+
+                <button type="submit" class="btn-primary-send">
+                    <i class="fab fa-whatsapp"></i>
+                    SAVE & SEND TO GROUP
+                </button>
+            </form>
         </div>
-
-        <div class="form-row">
-            <label>Conversion</label>
-            <div class="radio-group">
-                <label><input type="radio" name="convType" value="viewsToINR" checked> Views → INR</label>
-                <label><input type="radio" name="convType" value="INRToViews"> INR → Views</label>
-            </div>
-        </div>
-
-        <div class="form-row">
-            <label id="dynamicLabel">Views</label>
-            <input type="number" id="mainInputValue" placeholder="Enter views" step="1" min="0">
-        </div>
-
-        <button class="btn-calc" id="calculateBtn">Calculate</button>
-
-        <div id="resultsPanel" style="display: none;"></div>
     </div>
-    <footer>Develop by Ashx</footer>
+
+    <!-- Cards container -->
+    <div id="linksContainer" class="links-container"></div>
 </div>
 
 <script>
-    // ---------- PURE VIEWS ↔ INR ----------
-    let currentCpm = 600;
-    let isCustomActive = false;
-    
-    const cpmSelect = document.getElementById('cpmSelect');
-    const customContainer = document.getElementById('customCpmContainer');
-    const customCpmInput = document.getElementById('customCpmInput');
-    const radioViewsToINR = document.querySelector('input[value="viewsToINR"]');
-    const radioINRToViews = document.querySelector('input[value="INRToViews"]');
-    const mainInput = document.getElementById('mainInputValue');
-    const dynamicLabel = document.getElementById('dynamicLabel');
-    const resultsPanel = document.getElementById('resultsPanel');
-    const calcBtn = document.getElementById('calculateBtn');
+    // ---------- DATA ----------
+    const WA_GROUP = 'https://chat.whatsapp.com/FVibFx7vMcOHChq6lQoI5Y';   // same given group link
 
-    function updateCpm() {
-        const selectedVal = cpmSelect.value;
-        if (selectedVal === 'custom') {
-            isCustomActive = true;
-            customContainer.style.display = 'block';
-            let customVal = parseFloat(customCpmInput.value);
-            if (isNaN(customVal) || customVal <= 0) customVal = 600;
-            currentCpm = customVal;
-        } else {
-            isCustomActive = false;
-            customContainer.style.display = 'none';
-            currentCpm = parseFloat(selectedVal);
-        }
-        if (mainInput.value !== '') performCalculation();
+    // each item now only stores pageLink + description (NO pageName / followers)
+    let savedLinks = JSON.parse(localStorage.getItem('vaultPages')) || [];
+
+    // DOM elements
+    const linkForm       = document.getElementById('linkForm');
+    const linksContainer = document.getElementById('linksContainer');
+    const formPanel      = document.getElementById('formPanel');
+    const toggleIcon     = document.getElementById('toggleIcon');
+    const toggleText     = document.getElementById('toggleText');
+    const linkCountLabel = document.getElementById('linkCount');
+
+    // toggle panel
+    function toggleVault() {
+        const isCollapsed = formPanel.classList.toggle('collapsed');
+        toggleText.innerText = isCollapsed ? 'Add Script' : 'Close';
+        toggleIcon.className = isCollapsed ? 'fas fa-plus' : 'fas fa-times';
     }
 
-    cpmSelect.addEventListener('change', () => {
-        updateCpm();
-        if (mainInput.value !== '') performCalculation();
-    });
+    // ---- Build WhatsApp message format: Link + one line space (in that line this "-") + Description + next line = "-"
+    // Requirement: "Link + one line space(in that line this '-') + Description + next line= '-'"
+    // Strict interpretation:
+    // [LINK]
+    // - 
+    // [DESCRIPTION]
+    // -
+    function buildWAMessage(link, description) {
+        // Normalize: trim any whitespace
+        const cleanLink = link.trim();
+        const cleanDesc = description.trim();
+        // Format exactly: link, newline, "-", newline, description, newline, "-"
+        return `${cleanLink}\n-\n${cleanDesc}\n-`;
+    }
 
-    customCpmInput.addEventListener('input', () => {
-        if (isCustomActive) {
-            let val = parseFloat(customCpmInput.value);
-            if (!isNaN(val) && val > 0) {
-                currentCpm = val;
-                if (mainInput.value !== '') performCalculation();
+    // share via WhatsApp group + copy formatted message (same as before)
+    window.shareCard = (index) => {
+        const item = savedLinks[index];
+        if (!item) return;
+        const msg = buildWAMessage(item.pageLink, item.description);
+        // open group in new tab
+        window.open(WA_GROUP, '_blank');
+        setTimeout(() => {
+            navigator.clipboard.writeText(msg).catch(err => console.warn("clipboard failed", err));
+        }, 600);
+        alert('📤 Opening WhatsApp group. Message copied to clipboard — paste it there!');
+    };
+
+    // render cards – shows only LINK + DESCRIPTION (no pageName/followers)
+    function displayLinks() {
+        linksContainer.innerHTML = '';
+        linkCountLabel.innerText = savedLinks.length;
+
+        if (savedLinks.length === 0) {
+            linksContainer.innerHTML = `
+                <div class="empty-state">
+                    <i class="fas fa-scroll"></i>
+                    <p>No scripts saved yet. Hit <strong>Add Script</strong> to begin!</p>
+                </div>`;
+            return;
+        }
+
+        savedLinks.forEach((item, idx) => {
+            const card = document.createElement('div');
+            card.className = 'card';
+            // Format link for display truncation, but preserve full href
+            card.innerHTML = `
+                <a href="${escapeHtml(item.pageLink)}" target="_blank" class="link-simple" rel="noopener noreferrer">
+                    <i class="fas fa-link link-icon"></i>
+                    <span class="link-url">${escapeHtml(item.pageLink)}</span>
+                    <i class="fas fa-external-link-alt" style="font-size:0.7rem; opacity:0.6;"></i>
+                </a>
+                <div class="desc-block">
+                    <i class="fas fa-align-left"></i>
+                    <div class="desc-text">${escapeHtml(item.description) || '— no description —'}</div>
+                </div>
+                <div class="card-footer">
+                    <button onclick="shareCard(${idx})" class="icon-btn wa-share" title="Send to WhatsApp Group">
+                        <i class="fab fa-whatsapp"></i> Share
+                    </button>
+                    <div class="action-group">
+                        <button onclick="editLink(${idx})" class="icon-btn" title="Edit">
+                            <i class="fas fa-pen"></i>
+                        </button>
+                        <button onclick="deleteLink(${idx})" class="icon-btn delete" title="Delete">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </div>
+                </div>
+            `;
+            linksContainer.appendChild(card);
+        });
+    }
+
+    // tiny XSS protection
+    function escapeHtml(str) {
+        if (!str) return '';
+        return str.replace(/[&<>]/g, function(m) {
+            if (m === '&') return '&amp;';
+            if (m === '<') return '&lt;';
+            if (m === '>') return '&gt;';
+            return m;
+        }).replace(/[\uD800-\uDBFF][\uDC00-\uDFFF]/g, function(c) {
+            return c;
+        });
+    }
+
+    // save or update entry
+    function saveOrUpdateEntry(link, description, editIndexValue) {
+        const entry = {
+            pageLink: link.trim(),
+            description: description.trim()
+        };
+        // validation: both fields must have content
+        if (!entry.pageLink || !entry.description) {
+            alert('❌ Both Link and Description are required.');
+            return false;
+        }
+        // basic URL format check (optional, but friendly)
+        if (!entry.pageLink.startsWith('http://') && !entry.pageLink.startsWith('https://')) {
+            // allow but inform? we can accept but not strict
+            if (!confirm('Link should start with http:// or https://. Continue anyway?')) {
+                return false;
             }
         }
-    });
 
-    function updateInputLabel() {
-        const isViewsMode = radioViewsToINR.checked;
-        if (isViewsMode) {
-            dynamicLabel.innerText = 'Views';
-            mainInput.placeholder = 'e.g., 1,200,000';
+        if (editIndexValue === '') {
+            // add to beginning
+            savedLinks.unshift(entry);
         } else {
-            dynamicLabel.innerText = 'INR (₹)';
-            mainInput.placeholder = 'e.g., 5000';
+            savedLinks[editIndexValue] = entry;
+            document.getElementById('editIndex').value = '';
         }
+
+        localStorage.setItem('vaultPages', JSON.stringify(savedLinks));
+        return true;
     }
 
-    radioViewsToINR.addEventListener('change', () => {
-        updateInputLabel();
-        if (mainInput.value !== '') performCalculation();
-    });
-    radioINRToViews.addEventListener('change', () => {
-        updateInputLabel();
-        if (mainInput.value !== '') performCalculation();
-    });
-
-    function performCalculation() {
-        const rawInput = mainInput.value.trim();
-        if (rawInput === '') {
-            resultsPanel.style.display = 'none';
-            return;
-        }
-        let inputNumber = parseFloat(rawInput);
-        if (isNaN(inputNumber) || inputNumber < 0) {
-            resultsPanel.style.display = 'none';
-            return;
-        }
-
-        const isViewsMode = radioViewsToINR.checked;
-        let cpm = currentCpm;
-        if (isNaN(cpm) || cpm <= 0) cpm = 600;
-
-        let viewsNumber = 0;
-        let grossINR = 0;
-
-        if (isViewsMode) {
-            viewsNumber = inputNumber;
-            grossINR = (viewsNumber / 1000000) * cpm;
-        } else {
-            grossINR = inputNumber;
-            viewsNumber = (grossINR / cpm) * 1000000;
-        }
-
-        const TAX_THRESHOLD = 4000;
-        const TAX_RATE = 0.30;
-        let taxAmount = 0;
-        let finalINR = grossINR;
-        let isTaxApplied = false;
-
-        if (grossINR >= TAX_THRESHOLD) {
-            taxAmount = grossINR * TAX_RATE;
-            finalINR = grossINR - taxAmount;
-            isTaxApplied = true;
-        } else {
-            finalINR = grossINR;
-        }
-
-        const finalRounded = finalINR < 0 ? 0 : finalINR;
-        const grossRounded = grossINR < 0 ? 0 : grossINR;
-        const viewsDisplay = Math.floor(viewsNumber);
-
-        let resultHtml = `<div class="result-box">
-                            <div class="result-item">
-                                <span>${isViewsMode ? 'Views' : 'Views'}</span>
-                                <span><strong>${viewsDisplay.toLocaleString('en-IN')}</strong></span>
-                            </div>
-                            <div class="result-item">
-                                <span>₹INR</span>
-                                <span>₹${grossRounded.toLocaleString('en-IN', { maximumFractionDigits: 2 })}</span>
-                            </div>`;
-        
-        // if (isTaxApplied) {
-        //     resultHtml += `<div class="result-item">
-        //                         <span>Tax (30%)</span>
-        //                         <span>- ₹${taxAmount.toLocaleString('en-IN', { maximumFractionDigits: 2 })}</span>
-        //                     </div>`;
-        // }
-        // resultHtml += `<div class="result-item highlight">
-        //                     <span>Net (₹)</span>
-        //                     <span>₹${finalRounded.toLocaleString('en-IN', { maximumFractionDigits: 2 })}</span>
-        //                 </div>`;
-        
-        // if (isTaxApplied) {
-        //     resultHtml += `<div class="tax-badge">30% TDS applied (≥₹4000)</div>`;
-        // } else if (grossRounded > 0 && !isTaxApplied) {
-        //     resultHtml += `<div class="tax-badge" style="background:rgba(16,185,129,0.15);">No tax (below ₹4000)</div>`;
-        // }
-        
-        resultHtml += `<div class="info-strip" style="margin-top:1rem; background:transparent;">CPM: ₹${cpm.toFixed(2)} / 1M views</div>`;
-        resultHtml += `</div>`;
-        
-        resultsPanel.innerHTML = resultHtml;
-        resultsPanel.style.display = 'block';
-        resultsPanel.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-    }
-
-    mainInput.addEventListener('input', () => {
-        if (mainInput.value !== '') performCalculation();
-        else resultsPanel.style.display = 'none';
-    });
-    calcBtn.addEventListener('click', (e) => {
+    // submit handler: SAVE & SEND (one button)
+    linkForm.addEventListener('submit', (e) => {
         e.preventDefault();
-        if (mainInput.value !== '') performCalculation();
-        else {
-            resultsPanel.style.display = 'none';
-        }
-    });
 
-    // theme
-    const themeBtn = document.getElementById('themeToggleBtn');
-    function setTheme(theme) {
-        if (theme === 'light') {
-            document.body.setAttribute('data-theme', 'light');
-            themeBtn.innerHTML = '🌙 Dark';
+        const linkInput = document.getElementById('pageLink');
+        const descInput = document.getElementById('description');
+        const editIndexElem = document.getElementById('editIndex');
+        const editIdx = editIndexElem.value;
+
+        const rawLink = linkInput.value;
+        const rawDesc = descInput.value;
+
+        // perform save/update
+        const success = saveOrUpdateEntry(rawLink, rawDesc, editIdx);
+        if (!success) return;
+
+        // after saving, build message based on saved entry
+        const savedEntry = (editIdx === '') ? savedLinks[0] : savedLinks[editIdx];
+        const finalMsg = buildWAMessage(savedEntry.pageLink, savedEntry.description);
+
+        // copy to clipboard and open WA group
+        navigator.clipboard.writeText(finalMsg).catch(() => {});
+        window.open(WA_GROUP, '_blank');
+
+        alert('✅ Script saved! Opening WhatsApp group — message copied. Paste it there.');
+
+        // reset form & close panel & refresh display
+        linkInput.value = '';
+        descInput.value = '';
+        editIndexElem.value = '';
+        displayLinks();
+
+        // if panel is open, close it (user friendly)
+        if (!formPanel.classList.contains('collapsed')) {
+            toggleVault();
         } else {
-            document.body.removeAttribute('data-theme');
-            themeBtn.innerHTML = '☀️ Light';
+            // ensure collapsed after submit but leave closed
         }
-    }
-    themeBtn.addEventListener('click', () => {
-        const isLight = document.body.getAttribute('data-theme') === 'light';
-        if (isLight) setTheme('dark');
-        else setTheme('light');
     });
-    setTheme('dark');
 
-    updateInputLabel();
-    updateCpm();
-    if (cpmSelect.value === 'custom') {
-        let initCustom = parseFloat(customCpmInput.value);
-        if (!isNaN(initCustom) && initCustom > 0) currentCpm = initCustom;
-        else currentCpm = 600;
-    }
+    // delete function
+    window.deleteLink = (index) => {
+        if (confirm('⚠️ Delete this script entry permanently?')) {
+            savedLinks.splice(index, 1);
+            localStorage.setItem('vaultPages', JSON.stringify(savedLinks));
+            displayLinks();
+        }
+    };
 
+    // edit function: populate link and description into form
+    window.editLink = (index) => {
+        const item = savedLinks[index];
+        document.getElementById('pageLink').value = item.pageLink || '';
+        document.getElementById('description').value = item.description || '';
+        document.getElementById('editIndex').value = index;
 
+        // expand form if collapsed
+        if (formPanel.classList.contains('collapsed')) {
+            toggleVault();
+        }
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    };
+
+    // initial render
+    displayLinks();
+
+    // optional: ensure toggle button works globally
+    window.toggleVault = toggleVault;
 </script>
 </body>
 </html>
